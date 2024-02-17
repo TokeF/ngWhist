@@ -1,0 +1,12 @@
+<app-nav-bar></app-nav-bar>
+<form [formGroup]="form">
+    <div formArrayName="names">
+        <div *ngFor="let name of names.controls; index as i">
+            <div class="input-group">
+                <input [formControlName]="i" placeholder="Enter name">
+                <button class="delete-button" (click)="removeName(i)">X</button>
+            </div>
+        </div>
+    </div>
+    <button (click)="addName()">Add Name</button>
+</form>

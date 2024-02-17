@@ -1,0 +1,19 @@
+.input-group {
+    display: inline-flex;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+}
+  
+.input-group input {
+    /* flex-grow: 1; */
+    border: none;
+    padding: 10px;
+}
+
+.delete-button {
+    color: palevioletred;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
