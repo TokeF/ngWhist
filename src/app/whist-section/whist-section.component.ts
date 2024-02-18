@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavBarComponent } from '../nav-bar/nav-bar.component';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgFor } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-whist-section',
@@ -18,11 +19,14 @@ import { NgFor } from '@angular/common';
 export class WhistSectionComponent implements OnInit {
   form: FormGroup = new FormGroup({});
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private router: Router) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
-      names: this.formBuilder.array([])
+      names: this.formBuilder.array([]),
+      selectedPointSystem: this.formBuilder.control('option1'),
     });
 
     this.addName();
@@ -41,5 +45,9 @@ export class WhistSectionComponent implements OnInit {
 
   removeName(i: number) {
     this.names.removeAt(i);
+  }
+
+  onSubmit() {
+    this.router.navigate(['/whist-game'], { state: { data: this.form.value }});
   }
 }
