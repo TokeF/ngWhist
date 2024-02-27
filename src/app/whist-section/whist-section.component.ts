@@ -3,6 +3,7 @@ import { NavBarComponent } from '../nav-bar/nav-bar.component';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgFor } from '@angular/common';
 import { Router } from '@angular/router';
+import { WhistDataService } from '../whist-data.service';
 
 @Component({
   selector: 'app-whist-section',
@@ -21,6 +22,7 @@ export class WhistSectionComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
+    private whistDataService: WhistDataService,
     private router: Router) { }
 
   ngOnInit() {
@@ -48,6 +50,7 @@ export class WhistSectionComponent implements OnInit {
   }
 
   onSubmit() {
-    this.router.navigate(['/whist-game'], { state: { data: this.form.value }});
+    this.whistDataService.updateGameData(this.form);
+    this.router.navigate(['/whist-game']);
   }
 }
