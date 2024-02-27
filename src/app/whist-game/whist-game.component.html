@@ -17,16 +17,23 @@
 <button (click)="addPlay()">Add Play</button>
 
 <form [formGroup]="form">
-    <select formControlName="betAmount">
-        <option value=7>7</option>
-        <option value=8>8</option>
-        <option value=9>9</option>
-        <option value=10>10</option>
-        <option value=11>11</option>
-        <option value=12>12</option>
-        <option value=13>13</option>
+    <label for="amountBet">Bet</label>
+    <select formControlName="amountBet">
+        <option *ngFor="let number of AmountBet" [value]="number">{{number}}</option>
     </select>
+    <label for="betType">Type</label>
     <select formControlName="betType">
         <option *ngFor="let enum of Bets" [value]="enum">{{enum}}</option>
     </select>
+    <label for="amountWon">Won</label>
+    <select formControlName="amountWon">
+        <option *ngFor="let number of AmountWon" [value]="number">{{number}}</option>
+    </select>
+    <select formControlName="player1">
+        <option *ngFor="let name of names" [value]="name">{{name}}</option>
+    </select>
+    <select formControlName="player2">
+        <option *ngFor="let name of names" [value]="name">{{name}}</option>
+    </select>
+    
 </form>

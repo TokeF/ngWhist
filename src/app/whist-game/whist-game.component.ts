@@ -3,11 +3,12 @@ import { Router } from '@angular/router';
 import { WhistDataService } from '../whist-data.service';
 import { FormArray, FormControl, FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import {CdkTableModule, DataSource} from '@angular/cdk/table';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, range } from 'rxjs';
 import { Player } from '../player';
 import { NgFor } from '@angular/common';
 
 export enum Bets {
+  Nameless = "Nameless",
   Vip = "Vip",
   Halve = "Halve",
   Sans = "Sans",
@@ -31,13 +32,15 @@ export enum Bets {
 
 export class WhistGameComponent implements OnInit {
   
-  private names : string[] = [];
+  names : string[] = [];
   private scoreSystem : string = '';
   form: FormGroup = new FormGroup({});
   dataSource : BehaviorSubject<any> = new BehaviorSubject<any>([]);
   players = new BehaviorSubject<{[name: string]: Player}>({});
   displayedColumns: string[] = ['name', 'score'];
-  Bets :Bets[] = [Bets.Vip, Bets.Halve, Bets.Sans, Bets.Gode, Bets.Sol, Bets.RenSol, Bets.Bordlægger];
+  Bets :Bets[] = [Bets.Nameless, Bets.Vip, Bets.Halve, Bets.Sans, Bets.Gode, Bets.Sol, Bets.RenSol, Bets.Bordlægger];
+  AmountWon : number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+  AmountBet : number[] = this.AmountWon.slice(1, 8);
 
   constructor(
       private router: Router,
@@ -61,8 +64,11 @@ export class WhistGameComponent implements OnInit {
     
     //Form
     this.form = new FormGroup({
-      betAmount: this.formBuilder.control(7),
+      amountBet: this.formBuilder.control(7),
       betType: this.formBuilder.control('Vip'),
+      amountWon: this.formBuilder.control(7),
+      player1: this.formBuilder.control(this.names[0]),
+      player2: this.formBuilder.control(this.names[1]),
     });
   }
 
