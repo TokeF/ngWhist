@@ -4,8 +4,9 @@ export interface PlayTransaction {
     betType: string;
     amountBet: number;
     amountWon: number;
-    better: Player;
-    partner: Player;
-    opponent1: Player;
-    opponent2: Player;
+    better: string;
+    partner: string;
+    opponent1: string;
+    opponent2: string;
+    players: { [name: string]: Player };
 }
