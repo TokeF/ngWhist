@@ -1,6 +1,10 @@
+import { Injectable } from "@angular/core";
 import { ScoreStrategies } from "./score-strategy.enum";
 import { ZeroSum } from "./zero-sum-strategy";
 
+@Injectable({
+    providedIn: 'root'
+})
 export class ScoreStrategyFactory {
     getStrategy(scoreStrategy: ScoreStrategies) {
         switch (scoreStrategy) {

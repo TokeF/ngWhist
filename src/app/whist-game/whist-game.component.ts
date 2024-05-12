@@ -5,8 +5,12 @@ import { FormArray, FormControl, FormGroup, FormBuilder, ReactiveFormsModule } f
 import { CdkTableModule, DataSource } from '@angular/cdk/table';
 import { BehaviorSubject, Observable, of, range } from 'rxjs';
 import { Player } from '../common/objects/player.interface';
+import { PlayTransaction } from '../common/objects/play-transaction.interface';
 import { Bets } from '../common/objects/bets.enum';
 import { NgFor } from '@angular/common';
+import { ScoreStrategyFactory } from '../score-strategies/score-strategy.factory';
+import { ScoreStrategy } from '../score-strategies/score-strategy.interface';
+import { ZeroSum } from '../score-strategies/zero-sum-strategy';
 
 @Component({
   selector: 'app-whist-game',
@@ -21,25 +25,25 @@ import { NgFor } from '@angular/common';
 })
 
 export class WhistGameComponent implements OnInit {
-
+  scoreStrategy: ScoreStrategy = new ZeroSum(); // needs a default
   names: string[] = [];
-  private scoreSystem: string = '';
   form: FormGroup = new FormGroup({});
   dataSource: BehaviorSubject<any> = new BehaviorSubject<any>([]);
   players = new BehaviorSubject<{ [name: string]: Player }>({});
   displayedColumns: string[] = ['name', 'score'];
   Bets: Bets[] = [Bets.Nameless, Bets.Vip, Bets.Halve, Bets.Sans, Bets.Gode, Bets.Sol, Bets.RenSol, Bets.Bordlægger];
   AmountWon: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
-  AmountBet: number[] = this.AmountWon.slice(1, 8);
+  AmountBet: number[] = this.AmountWon.slice(7);
 
   constructor(
     private router: Router,
     private whistDataService: WhistDataService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    scoreStrategyFactory: ScoreStrategyFactory,
   ) {
     this.whistDataService.currentGameData.subscribe(form => {
       this.names = form.get('names')?.value;
-      this.scoreSystem = form.get('selectedPointSystem')?.value;
+      this.scoreStrategy = scoreStrategyFactory.getStrategy(form.get('selectedPointSystem')?.value);
     });
   }
 
@@ -66,7 +70,16 @@ export class WhistGameComponent implements OnInit {
     // calc score
     let amtBet = this.form.get('amountBet')!.value;
     let amtWon = this.form.get('amountWon')!.value;
-    let score = amtWon - amtBet
+    let transaction: PlayTransaction = {
+      better: this.form.get('player1')!.value,
+      partner: this.form.get('player2')!.value,
+      amountBet: amtBet,
+      amountWon: amtWon,
+      betType: this.form.get('betType')!.value,
+      opponent1: this.players.value[0],
+      opponent2: this.players.value[1],
+    };
+    let score = this.scoreStrategy.calculateScore(transaction);
 
     // find players
     let p1 = this.players.value[this.form.get('player1')!.value];
