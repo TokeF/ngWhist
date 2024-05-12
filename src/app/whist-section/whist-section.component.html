@@ -17,15 +17,13 @@
     <h2>Select point system</h2>
     <form [formGroup]="form">
         <select formControlName="selectedPointSystem">
-            <option value="option1">Lakse Drengene</option>
-            <option value="option2">Øre Point</option>
-            <option value="option3">Win/Loose</option>
+            <option *ngFor="let strategy of scoreStrategies" [value]="strategy">{{strategy}}</option>
         </select>
     </form>
 </div>
 
 <div>
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <button type="submit" >Start Game</button>
+        <button type="submit">Start Game</button>
     </form>
 </div>

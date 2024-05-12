@@ -4,6 +4,7 @@ import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular
 import { NgFor } from '@angular/common';
 import { Router } from '@angular/router';
 import { WhistDataService } from '../common/service/whist-data.service';
+import { ScoreStrategies } from '../score-strategies/score-strategy.enum';
 
 @Component({
   selector: 'app-whist-section',
@@ -18,6 +19,7 @@ import { WhistDataService } from '../common/service/whist-data.service';
 })
 
 export class WhistSectionComponent implements OnInit {
+  scoreStrategies = Object.values(ScoreStrategies);
   form: FormGroup = new FormGroup({});
 
   constructor(
@@ -28,7 +30,7 @@ export class WhistSectionComponent implements OnInit {
   ngOnInit() {
     this.form = this.formBuilder.group({
       names: this.formBuilder.array([]),
-      selectedPointSystem: this.formBuilder.control('option1'),
+      selectedPointSystem: this.formBuilder.control(ScoreStrategies.ZeroSum),
     });
 
     this.addName();

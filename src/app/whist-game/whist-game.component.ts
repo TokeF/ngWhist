@@ -4,19 +4,9 @@ import { WhistDataService } from '../common/service/whist-data.service';
 import { FormArray, FormControl, FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { CdkTableModule, DataSource } from '@angular/cdk/table';
 import { BehaviorSubject, Observable, of, range } from 'rxjs';
-import { Player } from '../common/objects/player';
+import { Player } from '../common/objects/player.interface';
+import { Bets } from '../common/objects/bets.enum';
 import { NgFor } from '@angular/common';
-
-export enum Bets {
-  Nameless = "Nameless",
-  Vip = "Vip",
-  Halve = "Halve",
-  Sans = "Sans",
-  Gode = "Gode",
-  Sol = "Sol",
-  RenSol = "Ren Sol",
-  Bordlægger = "Bordlægger",
-}
 
 @Component({
   selector: 'app-whist-game',
