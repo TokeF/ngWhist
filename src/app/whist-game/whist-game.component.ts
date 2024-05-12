@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { WhistDataService } from '../whist-data.service';
+import { WhistDataService } from '../common/service/whist-data.service';
 import { FormArray, FormControl, FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import {CdkTableModule, DataSource} from '@angular/cdk/table';
+import { CdkTableModule, DataSource } from '@angular/cdk/table';
 import { BehaviorSubject, Observable, of, range } from 'rxjs';
-import { Player } from '../player';
+import { Player } from '../common/objects/player';
 import { NgFor } from '@angular/common';
 
 export enum Bets {
@@ -31,37 +31,37 @@ export enum Bets {
 })
 
 export class WhistGameComponent implements OnInit {
-  
-  names : string[] = [];
-  private scoreSystem : string = '';
+
+  names: string[] = [];
+  private scoreSystem: string = '';
   form: FormGroup = new FormGroup({});
-  dataSource : BehaviorSubject<any> = new BehaviorSubject<any>([]);
-  players = new BehaviorSubject<{[name: string]: Player}>({});
+  dataSource: BehaviorSubject<any> = new BehaviorSubject<any>([]);
+  players = new BehaviorSubject<{ [name: string]: Player }>({});
   displayedColumns: string[] = ['name', 'score'];
-  Bets :Bets[] = [Bets.Nameless, Bets.Vip, Bets.Halve, Bets.Sans, Bets.Gode, Bets.Sol, Bets.RenSol, Bets.Bordlægger];
-  AmountWon : number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
-  AmountBet : number[] = this.AmountWon.slice(1, 8);
+  Bets: Bets[] = [Bets.Nameless, Bets.Vip, Bets.Halve, Bets.Sans, Bets.Gode, Bets.Sol, Bets.RenSol, Bets.Bordlægger];
+  AmountWon: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+  AmountBet: number[] = this.AmountWon.slice(1, 8);
 
   constructor(
-      private router: Router,
-      private whistDataService: WhistDataService,
-      private formBuilder: FormBuilder
-    ) { 
-      this.whistDataService.currentGameData.subscribe(form => {
+    private router: Router,
+    private whistDataService: WhistDataService,
+    private formBuilder: FormBuilder
+  ) {
+    this.whistDataService.currentGameData.subscribe(form => {
       this.names = form.get('names')?.value;
       this.scoreSystem = form.get('selectedPointSystem')?.value;
-    });   
+    });
   }
 
   ngOnInit() {
     // Table
     this.names.forEach(name => {
-      if(name != ""){
-        this.players.value[name] = {name: name, score: 0};
+      if (name != "") {
+        this.players.value[name] = { name: name, score: 0 };
       }
     });
     this.players.subscribe(player => this.dataSource.next(Object.values(player)));
-    
+
     //Form
     this.form = new FormGroup({
       amountBet: this.formBuilder.control(7),
@@ -73,24 +73,38 @@ export class WhistGameComponent implements OnInit {
   }
 
   addPlay() {
-    const cu = this.players.value["Hej"];
-    cu.score += 1;
-    const newData = {...this.players.value};
-    newData["Hej"] = cu;
+    // calc score
+    let amtBet = this.form.get('amountBet')!.value;
+    let amtWon = this.form.get('amountWon')!.value;
+    let score = amtWon - amtBet
+
+    // find players
+    let p1 = this.players.value[this.form.get('player1')!.value];
+    let p2 = this.players.value[this.form.get('player2')!.value];
+    let remainingPlayerNames = Object
+      .keys(this.players.value)
+      .filter(name => name != p1.name && name != p2.name);
+
+    // update player data
+    p1.score += score;
+    p2.score += score;
+    const newData = { ...this.players.value };
+    newData[p1.name] = p1;
+    newData[p2.name] = p2;
     this.players.next(newData);
   }
 }
 
-export class ScoreDataSource extends DataSource<Player> {
-  private players: Player[] = [{ name: 'test', score: 0}];
+// export class ScoreDataSource extends DataSource<Player> {
+//   private players: Player[] = [{ name: 'test', score: 0 }];
 
-  constructor() {
-    super();
-  }
+//   constructor() {
+//     super();
+//   }
 
-  connect(): Observable<Player[]> {
-    return new BehaviorSubject<Player[]>(this.players);
-  }
+//   connect(): Observable<Player[]> {
+//     return new BehaviorSubject<Player[]>(this.players);
+//   }
 
-  disconnect() {}
-}
+//   disconnect() { }
+// }

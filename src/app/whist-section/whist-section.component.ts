@@ -3,7 +3,7 @@ import { NavBarComponent } from '../nav-bar/nav-bar.component';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgFor } from '@angular/common';
 import { Router } from '@angular/router';
-import { WhistDataService } from '../whist-data.service';
+import { WhistDataService } from '../common/service/whist-data.service';
 
 @Component({
   selector: 'app-whist-section',
